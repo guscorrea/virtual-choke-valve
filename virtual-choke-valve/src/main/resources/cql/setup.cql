@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS well (well_id uuid PRIMARY KEY, name text);
