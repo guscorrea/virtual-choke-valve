@@ -3,16 +3,12 @@ package com.dt.virtualchokevalve.config;
 import static com.datastax.driver.core.schemabuilder.SchemaBuilder.createKeyspace;
 import static com.datastax.driver.mapping.NamingConventions.LOWER_CAMEL_CASE;
 import static com.datastax.driver.mapping.NamingConventions.LOWER_SNAKE_CASE;
-import static org.apache.commons.lang3.StringUtils.normalizeSpace;
-import static org.apache.commons.lang3.StringUtils.split;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,8 +54,8 @@ public class ScyllaConfig {
 		replication.put("DC1", 3);
 		session.execute(createKeyspace(keyspace).ifNotExists().with().replication(replication));
 		session.execute("USE " + keyspace);
-		String[] statements = split(IOUtils.toString(getClass().getResourceAsStream("/cql/setup.cql")), ";");
-		Arrays.stream(statements).map(statement -> normalizeSpace(statement) + ";").forEach(session::execute);
+		//String[] statements = split(IOUtils.toString(getClass().getResourceAsStream("/cql/setup.cql")), ";");
+		//Arrays.stream(statements).map(statement -> normalizeSpace(statement) + ";").forEach(session::execute);
 	}
 
 }
