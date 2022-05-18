@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.extras.codecs.jdk8.LocalDateTimeCodec;
 import com.datastax.driver.mapping.DefaultNamingStrategy;
 import com.datastax.driver.mapping.DefaultPropertyMapper;
 import com.datastax.driver.mapping.MappingConfiguration;
@@ -26,11 +27,13 @@ public class ScyllaConfig {
 
 	@Bean
 	public Cluster cluster() {
-		return Cluster.builder().addContactPointsWithPorts(
-				new InetSocketAddress("127.0.0.1", 9042),
-				new InetSocketAddress("127.0.0.1", 9043),
-				new InetSocketAddress("127.0.0.1", 9044))
+		Cluster cluster = Cluster.builder().addContactPointsWithPorts(
+						new InetSocketAddress("127.0.0.1", 9042),
+						new InetSocketAddress("127.0.0.1", 9043),
+						new InetSocketAddress("127.0.0.1", 9044))
 				.build();
+		cluster.getConfiguration().getCodecRegistry().register(LocalDateTimeCodec.instance);
+		return cluster;
 	}
 
 	@Bean

@@ -1,5 +1,6 @@
 package com.dt.virtualchokevalve.persistence.entity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.datastax.driver.mapping.annotations.Column;
@@ -20,5 +21,11 @@ public class ChokeValve {
 
 	@Column
 	private String name;
+
+	@Column
+	private String valveInfo;
+
+	@Column
+	LocalDateTime creationDateTime;
 
 }

@@ -10,5 +10,6 @@ public class ChokeValveRequest {
 	@NotBlank
 	String name;
 
+	String valveInfo;
 
 }

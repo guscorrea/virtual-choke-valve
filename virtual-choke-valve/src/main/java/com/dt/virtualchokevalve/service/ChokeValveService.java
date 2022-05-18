@@ -1,5 +1,6 @@
 package com.dt.virtualchokevalve.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +23,7 @@ public class ChokeValveService {
 
 	public ChokeValve saveChokeValve(ChokeValveRequest chokeValveRequest) {
 		System.out.println("Creating a choke valve with name " + chokeValveRequest.getName());
-		ChokeValve chokeValve = new ChokeValve(UUID.randomUUID(), chokeValveRequest.getName());
+		ChokeValve chokeValve = new ChokeValve(UUID.randomUUID(), chokeValveRequest.getName(), chokeValveRequest.getValveInfo(), LocalDateTime.now());
 		return chokeValveRepository.save(chokeValve);
 	}
 

@@ -1,6 +1,7 @@
 package com.dt.virtualchokevalve.persistence;
 
 import static com.datastax.driver.core.DataType.text;
+import static com.datastax.driver.core.DataType.timestamp;
 import static com.datastax.driver.core.DataType.uuid;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
 
@@ -36,7 +37,9 @@ public class ChokeValveRepository {
 				SchemaBuilder.createTable(TABLE)
 						.ifNotExists()
 						.addPartitionKey("choke_valve_id", uuid())
-						.addColumn("name", text()));
+						.addColumn("name", text())
+						.addColumn("valve_info", text())
+						.addColumn("creation_date_time", timestamp()));
 	}
 
 	public ChokeValve find(UUID id) {
