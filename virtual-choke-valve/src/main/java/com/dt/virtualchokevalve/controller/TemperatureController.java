@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.virtualchokevalve.persistence.TemperatureRepository;
@@ -24,6 +25,12 @@ public class TemperatureController {
 	@GetMapping("/temperature")
 	public ResponseEntity<List<Temperature>> listTemperature() {
 		return new ResponseEntity<>(temperatureRepository.findAll(), HttpStatus.OK);
+	}
+
+	@GetMapping("/temperature/{id}")
+	public ResponseEntity<Void> getTemperature(@PathVariable("id") String id) {
+		//temperatureRepository.getAllById(UUID.fromString(id));
+		return ResponseEntity.ok().build();
 	}
 
 }

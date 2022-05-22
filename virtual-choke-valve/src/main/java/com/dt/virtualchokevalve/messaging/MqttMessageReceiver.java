@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.dt.virtualchokevalve.model.MqttRequest;
 import com.dt.virtualchokevalve.model.enums.MeasurementType;
+import com.dt.virtualchokevalve.persistence.PressureRepository;
 import com.dt.virtualchokevalve.persistence.TemperatureRepository;
+import com.dt.virtualchokevalve.persistence.entity.Pressure;
 import com.dt.virtualchokevalve.persistence.entity.Temperature;
 import com.dt.virtualchokevalve.utils.TopicDataExtractor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,11 +26,15 @@ public class MqttMessageReceiver implements MessageHandler {
 
 	private final TemperatureRepository temperatureRepository;
 
+	private final PressureRepository pressureRepository;
+
 	@Autowired
-	public MqttMessageReceiver(ObjectMapper objectMapper, TopicDataExtractor topicDataExtractor, TemperatureRepository temperatureRepository) {
+	public MqttMessageReceiver(ObjectMapper objectMapper, TopicDataExtractor topicDataExtractor, TemperatureRepository temperatureRepository,
+			PressureRepository pressureRepository) {
 		this.objectMapper = objectMapper;
 		this.topicDataExtractor = topicDataExtractor;
 		this.temperatureRepository = temperatureRepository;
+		this.pressureRepository = pressureRepository;
 	}
 
 	@Override
@@ -46,7 +52,8 @@ public class MqttMessageReceiver implements MessageHandler {
 				temperatureRepository.save(temperature);
 			}
 			else {
-				//save pressure
+				Pressure pressure = new Pressure(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getTimeStamp(), mqttRequest.getValue());
+				pressureRepository.save(pressure);
 			}
 		}
 		catch (JsonProcessingException e) {

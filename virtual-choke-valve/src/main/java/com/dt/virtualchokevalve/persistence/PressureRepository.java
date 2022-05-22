@@ -14,20 +14,20 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.schemabuilder.SchemaBuilder;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
-import com.dt.virtualchokevalve.persistence.entity.Temperature;
+import com.dt.virtualchokevalve.persistence.entity.Pressure;
 
 @Repository
-public class TemperatureRepository {
+public class PressureRepository {
 
-	private Mapper<Temperature> mapper;
+	private Mapper<Pressure> mapper;
 
 	private Session session;
 
-	private static final String TABLE = "temperature";
+	private static final String TABLE = "pressure";
 
-	public TemperatureRepository(MappingManager mappingManager) {
+	public PressureRepository(MappingManager mappingManager) {
 		createTable(mappingManager.getSession());
-		this.mapper = mappingManager.mapper(Temperature.class);
+		this.mapper = mappingManager.mapper(Pressure.class);
 		this.session = mappingManager.getSession();
 	}
 
@@ -40,14 +40,14 @@ public class TemperatureRepository {
 						.addColumn("value", text()));
 	}
 
-	public List<Temperature> findAll() {
+	public List<Pressure> findAll() {
 		final ResultSet result = session.execute(select().all().from(TABLE));
 		return mapper.map(result).all();
 	}
 
-	public Temperature save(Temperature temperature) {
-		mapper.save(temperature);
-		return temperature;
+	public Pressure save(Pressure pressure) {
+		mapper.save(pressure);
+		return pressure;
 	}
 
 }
