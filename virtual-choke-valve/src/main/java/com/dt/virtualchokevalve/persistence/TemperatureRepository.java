@@ -15,20 +15,20 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.schemabuilder.SchemaBuilder;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
-import com.dt.virtualchokevalve.persistence.entity.ChokeValve;
+import com.dt.virtualchokevalve.persistence.entity.Temperature;
 
 @Repository
-public class ChokeValveRepository {
+public class TemperatureRepository {
 
-	private Mapper<ChokeValve> mapper;
+	private Mapper<Temperature> mapper;
 
 	private Session session;
 
-	private static final String TABLE = "choke_valve";
+	private static final String TABLE = "temperature";
 
-	public ChokeValveRepository(MappingManager mappingManager) {
+	public TemperatureRepository(MappingManager mappingManager) {
 		createTable(mappingManager.getSession());
-		this.mapper = mappingManager.mapper(ChokeValve.class);
+		this.mapper = mappingManager.mapper(Temperature.class);
 		this.session = mappingManager.getSession();
 	}
 
@@ -37,16 +37,15 @@ public class ChokeValveRepository {
 				SchemaBuilder.createTable(TABLE)
 						.ifNotExists()
 						.addPartitionKey("choke_valve_id", uuid())
-						.addColumn("name", text())
-						.addColumn("valve_info", text())
-						.addColumn("creation_date_time", timestamp()));
+						.addClusteringColumn("timestamp", timestamp())
+						.addColumn("value", text()));
 	}
 
-	public ChokeValve find(UUID id) {
+	public Temperature find(UUID id) {
 		return mapper.get(id);
 	}
 
-	public List<ChokeValve> findAll() {
+	public List<Temperature> findAll() {
 		final ResultSet result = session.execute(select().all().from(TABLE));
 		return mapper.map(result).all();
 	}
@@ -55,9 +54,9 @@ public class ChokeValveRepository {
 		mapper.delete(id);
 	}
 
-	public ChokeValve save(ChokeValve chokeValve) {
-		mapper.save(chokeValve);
-		return chokeValve;
+	public Temperature save(Temperature temperature) {
+		mapper.save(temperature);
+		return temperature;
 	}
 
 }

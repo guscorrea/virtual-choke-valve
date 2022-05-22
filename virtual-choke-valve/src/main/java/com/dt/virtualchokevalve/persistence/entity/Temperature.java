@@ -3,6 +3,7 @@ package com.dt.virtualchokevalve.persistence.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.datastax.driver.mapping.annotations.ClusteringColumn;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -13,19 +14,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "choke_valve")
-public class ChokeValve {
+@Table(name = "temperature")
+public class Temperature {
 
 	@PartitionKey
 	private UUID chokeValveId;
 
-	@Column
-	private String name;
+	@ClusteringColumn
+	private LocalDateTime timestamp;
 
 	@Column
-	private String valveInfo;
-
-	@Column
-	private LocalDateTime creationDateTime;
+	private String value;
 
 }

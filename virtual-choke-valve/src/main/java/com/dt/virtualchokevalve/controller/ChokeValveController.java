@@ -33,16 +33,22 @@ public class ChokeValveController {
 		this.chokeValveService = chokeValveService;
 	}
 
-	@GetMapping("/choke.valve")
+	@GetMapping("/choke-valve")
 	public ResponseEntity<List<ChokeValve>> listChokeValve() {
 		List<ChokeValve> chokeValves = chokeValveService.getAllChokeValves();
 		return new ResponseEntity<>(chokeValves, HttpStatus.OK);
 	}
 
-	@PostMapping("/choke.valve")
+	@PostMapping("/choke-valve")
 	public ResponseEntity<ChokeValve> createChokeValve(@RequestBody @Valid ChokeValveRequest chokeValveRequest) {
 		ChokeValve chokeValve = chokeValveService.saveChokeValve(chokeValveRequest);
 		return new ResponseEntity<>(chokeValve, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/choke-valve/{id}")
+	public ResponseEntity<Void> createChokeValve(@PathVariable("id") String id) {
+		chokeValveService.deleteChokeValve(id);
+		return ResponseEntity.noContent().build();
 	}
 
 
@@ -51,12 +57,6 @@ public class ChokeValveController {
 		System.out.println("Adding new topic: " + name);
 		mqttConfig.adapter.addTopic(name, 2);
 		return ResponseEntity.ok().build();
-	}
-
-	@DeleteMapping("/choke.valve/{id}")
-	public ResponseEntity<Void> createChokeValve(@PathVariable("id") String id) {
-		chokeValveService.deleteChokeValve(id);
-		return ResponseEntity.noContent().build();
 	}
 
 }

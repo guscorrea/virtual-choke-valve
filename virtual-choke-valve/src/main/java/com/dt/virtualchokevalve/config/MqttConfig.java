@@ -14,6 +14,8 @@ import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
+import com.dt.virtualchokevalve.messaging.MqttMessageReceiver;
+
 @Configuration
 public class MqttConfig {
 
