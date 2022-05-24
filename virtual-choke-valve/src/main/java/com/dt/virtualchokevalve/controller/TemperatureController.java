@@ -1,6 +1,7 @@
 package com.dt.virtualchokevalve.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,8 @@ public class TemperatureController {
 	}
 
 	@GetMapping("/temperature/{id}")
-	public ResponseEntity<Void> getTemperature(@PathVariable("id") String id) {
-		//temperatureRepository.getAllById(UUID.fromString(id));
-		return ResponseEntity.ok().build();
+	public ResponseEntity<List<Temperature>> getTemperature(@PathVariable("id") String id) {
+		return new ResponseEntity<List<Temperature>>(temperatureRepository.findAllByChokeValveId(UUID.fromString(id)), HttpStatus.OK);
 	}
 
 }

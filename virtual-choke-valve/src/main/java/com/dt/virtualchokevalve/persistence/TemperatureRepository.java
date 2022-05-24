@@ -3,9 +3,11 @@ package com.dt.virtualchokevalve.persistence;
 import static com.datastax.driver.core.DataType.text;
 import static com.datastax.driver.core.DataType.timestamp;
 import static com.datastax.driver.core.DataType.uuid;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
@@ -42,6 +44,11 @@ public class TemperatureRepository {
 
 	public List<Temperature> findAll() {
 		final ResultSet result = session.execute(select().all().from(TABLE));
+		return mapper.map(result).all();
+	}
+
+	public List<Temperature> findAllByChokeValveId(UUID chokeValveId) {
+		final ResultSet result = session.execute(select().all().from(TABLE).where(eq("choke_valve_id", chokeValveId)));
 		return mapper.map(result).all();
 	}
 
