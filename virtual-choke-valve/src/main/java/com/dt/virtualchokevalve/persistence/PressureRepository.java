@@ -4,8 +4,11 @@ import static com.datastax.driver.core.DataType.text;
 import static com.datastax.driver.core.DataType.timestamp;
 import static com.datastax.driver.core.DataType.uuid;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.gte;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.lte;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +52,14 @@ public class PressureRepository {
 
 	public List<Pressure> findAllByChokeValveId(UUID chokeValveId) {
 		final ResultSet result = session.execute(select().all().from(TABLE).where(eq("choke_valve_id", chokeValveId)));
+		return mapper.map(result).all();
+	}
+
+	public List<Pressure> findAllByChokeValveIdAndDateTime(UUID chokeValveId, String startDateTime, String endDateTime) {
+		final ResultSet result = session.execute(
+				select().all().from(TABLE).where(eq("choke_valve_id", chokeValveId))
+						.and(gte("timestamp", LocalDateTime.parse(startDateTime)))
+						.and(lte("timestamp", LocalDateTime.parse(endDateTime))));
 		return mapper.map(result).all();
 	}
 
