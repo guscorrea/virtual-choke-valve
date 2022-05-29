@@ -57,8 +57,6 @@ public class ScyllaConfig {
 		replication.put("DC1", 3);
 		session.execute(createKeyspace(keyspace).ifNotExists().with().replication(replication));
 		session.execute("USE " + keyspace);
-		//String[] statements = split(IOUtils.toString(getClass().getResourceAsStream("/cql/setup.cql")), ";");
-		//Arrays.stream(statements).map(statement -> normalizeSpace(statement) + ";").forEach(session::execute);
 	}
 
 }

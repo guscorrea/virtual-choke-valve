@@ -31,11 +31,6 @@ public class TemperatureController {
 	}
 
 	@GetMapping("/temperature/{id}")
-	public ResponseEntity<List<Temperature>> getTemperature(@PathVariable("id") String id) {
-		return new ResponseEntity<List<Temperature>>(temperatureRepository.findAllByChokeValveId(UUID.fromString(id)), HttpStatus.OK);
-	}
-
-	@GetMapping("/temperature/{id}")
 	public ResponseEntity<List<Temperature>> getTemperature(@PathVariable("id") String id, @RequestParam(required = false) String startDateTime,
 			@RequestParam(required = false) String endDateTime) {
 
