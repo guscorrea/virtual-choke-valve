@@ -56,7 +56,7 @@ public class MqttMessageReceiver implements MessageHandler {
 				pressureRepository.save(pressure);
 			}
 		}
-		catch (JsonProcessingException e) {
+		catch (JsonProcessingException | IllegalArgumentException e) {
 			System.out.println("Error deserializing Mqtt Request " + message.getPayload());
 		}
 	}

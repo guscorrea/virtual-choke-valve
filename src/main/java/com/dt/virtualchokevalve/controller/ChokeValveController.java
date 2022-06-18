@@ -1,6 +1,7 @@
 package com.dt.virtualchokevalve.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -32,6 +33,12 @@ public class ChokeValveController {
 	public ResponseEntity<List<ChokeValve>> listChokeValve() {
 		List<ChokeValve> chokeValves = chokeValveService.getAllChokeValves();
 		return new ResponseEntity<>(chokeValves, HttpStatus.OK);
+	}
+
+	@GetMapping("/choke-valve/{id}")
+	public ResponseEntity<ChokeValve> getChokeValve(@PathVariable("id") UUID id) {
+		ChokeValve chokeValve = chokeValveService.getChokeValve(id);
+		return new ResponseEntity<>(chokeValve, HttpStatus.OK);
 	}
 
 	@PostMapping("/choke-valve")

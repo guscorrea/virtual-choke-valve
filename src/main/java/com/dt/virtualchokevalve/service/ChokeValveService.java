@@ -39,6 +39,10 @@ public class ChokeValveService {
 		return chokeValveRepository.findAll();
 	}
 
+	public ChokeValve getChokeValve(UUID id) {
+		return chokeValveRepository.find(id);
+	}
+
 	public void deleteChokeValve(String id) {
 		System.out.println("Deleting choke valve with id " + id);
 		chokeValveRepository.delete(UUID.fromString(id));
