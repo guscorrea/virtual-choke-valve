@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,8 +48,14 @@ public class ChokeValveController {
 		return new ResponseEntity<>(chokeValve, HttpStatus.OK);
 	}
 
+	@PutMapping("/choke-valve/{id}")
+	public ResponseEntity<ChokeValve> updateChokeValve(@PathVariable("id") UUID id, @RequestBody @Valid ChokeValveRequest chokeValveRequest) {
+		ChokeValve updatedChokeValve = chokeValveService.updateChokeValve(id, chokeValveRequest);
+		return new ResponseEntity<>(updatedChokeValve, HttpStatus.OK);
+	}
+
 	@DeleteMapping("/choke-valve/{id}")
-	public ResponseEntity<Void> createChokeValve(@PathVariable("id") String id) {
+	public ResponseEntity<Void> createChokeValve(@PathVariable("id") UUID id) {
 		chokeValveService.deleteChokeValve(id);
 		return ResponseEntity.noContent().build();
 	}

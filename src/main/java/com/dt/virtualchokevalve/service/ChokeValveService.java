@@ -2,6 +2,7 @@ package com.dt.virtualchokevalve.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -28,13 +29,6 @@ public class ChokeValveService {
 		this.chokeValveRepository = chokeValveRepository;
 	}
 
-	public ChokeValve saveChokeValve(ChokeValveRequest chokeValveRequest) {
-		System.out.println("Creating a choke valve with name " + chokeValveRequest.getName());
-		ChokeValve chokeValve = new ChokeValve(UUID.randomUUID(), chokeValveRequest.getName(), chokeValveRequest.getValveInfo(), LocalDateTime.now());
-		addTopics(chokeValve);
-		return chokeValveRepository.save(chokeValve);
-	}
-
 	public List<ChokeValve> getAllChokeValves() {
 		return chokeValveRepository.findAll();
 	}
@@ -43,9 +37,28 @@ public class ChokeValveService {
 		return chokeValveRepository.find(id);
 	}
 
-	public void deleteChokeValve(String id) {
+	public ChokeValve saveChokeValve(ChokeValveRequest chokeValveRequest) {
+		System.out.println("Creating a choke valve with name " + chokeValveRequest.getName());
+		ChokeValve chokeValve = new ChokeValve(UUID.randomUUID(), chokeValveRequest.getName(), chokeValveRequest.getValveInfo(), LocalDateTime.now());
+		addTopics(chokeValve);
+		return chokeValveRepository.save(chokeValve);
+	}
+
+	public ChokeValve updateChokeValve(UUID id, ChokeValveRequest chokeValveRequest) {
+		ChokeValve chokeValve = getChokeValve(id);
+		if (Objects.isNull(chokeValve)) {
+			//TODO throw exception
+		}
+		System.out.println("Updating choke valve with id " + id);
+		chokeValve.setName(chokeValveRequest.getName());
+		chokeValve.setValveInfo(chokeValveRequest.getValveInfo());
+		return chokeValveRepository.save(chokeValve);
+	}
+
+	public void deleteChokeValve(UUID id) {
 		System.out.println("Deleting choke valve with id " + id);
-		chokeValveRepository.delete(UUID.fromString(id));
+		chokeValveRepository.delete(id);
+		//TODO remove topics
 	}
 
 	private void addTopics(ChokeValve chokeValve) {
