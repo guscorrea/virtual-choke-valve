@@ -33,13 +33,16 @@ public class TemperatureController {
 	@GetMapping("/temperature/{id}")
 	public ResponseEntity<List<Temperature>> getTemperature(@PathVariable("id") String id, @RequestParam(required = false) String startDateTime,
 			@RequestParam(required = false) String endDateTime) {
-
-		//TODO create a service class to accommodate this code + tests
-		if (StringUtils.isNotEmpty(startDateTime) && StringUtils.isNotEmpty(endDateTime)) {
-			return new ResponseEntity<>(temperatureRepository.findAllByChokeValveIdAndDateTime(UUID.fromString(id), startDateTime, endDateTime),
-					HttpStatus.OK);
+		if (areDateFiltersInformed(startDateTime, endDateTime)) {
+			List<Temperature> temperatureList = temperatureRepository.findAllByChokeValveIdAndDateTime(UUID.fromString(id), startDateTime,
+					endDateTime);
+			return new ResponseEntity<>(temperatureList, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(temperatureRepository.findAllByChokeValveId(UUID.fromString(id)), HttpStatus.OK);
+	}
+
+	private boolean areDateFiltersInformed(String startDateTime, String endDateTime) {
+		return StringUtils.isNotEmpty(startDateTime) && StringUtils.isNotEmpty(endDateTime);
 	}
 
 }

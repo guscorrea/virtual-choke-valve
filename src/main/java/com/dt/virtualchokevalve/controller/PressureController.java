@@ -33,13 +33,15 @@ public class PressureController {
 	@GetMapping("/pressure/{id}")
 	public ResponseEntity<List<Pressure>> getPressure(@PathVariable("id") String id, @RequestParam(required = false) String startDateTime,
 			@RequestParam(required = false) String endDateTime) {
-
-		//TODO create a service class to accommodate this code
-		if (StringUtils.isNotEmpty(startDateTime) && StringUtils.isNotEmpty(endDateTime)) {
-			return new ResponseEntity<>(pressureRepository.findAllByChokeValveIdAndDateTime(UUID.fromString(id), startDateTime, endDateTime),
-					HttpStatus.OK);
+		if (areDateFiltersInformed(startDateTime, endDateTime)) {
+			List<Pressure> pressureList = pressureRepository.findAllByChokeValveIdAndDateTime(UUID.fromString(id), startDateTime, endDateTime);
+			return new ResponseEntity<>(pressureList, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(pressureRepository.findAllByChokeValveId(UUID.fromString(id)), HttpStatus.OK);
+	}
+
+	private boolean areDateFiltersInformed(String startDateTime, String endDateTime) {
+		return StringUtils.isNotEmpty(startDateTime) && StringUtils.isNotEmpty(endDateTime);
 	}
 
 }

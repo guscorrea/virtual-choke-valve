@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dt.virtualchokevalve.config.MqttConfig;
+import com.dt.virtualchokevalve.exception.ChokeValveNotFoundException;
 import com.dt.virtualchokevalve.model.ChokeValveRequest;
 import com.dt.virtualchokevalve.model.enums.MeasurementType;
 import com.dt.virtualchokevalve.persistence.ChokeValveRepository;
@@ -21,6 +22,8 @@ public class ChokeValveService {
 
 	@Resource
 	private MqttConfig mqttConfig;
+
+	private static final String CHOKE_TOPIC = "choke.";
 
 	private ChokeValveRepository chokeValveRepository;
 
@@ -34,7 +37,11 @@ public class ChokeValveService {
 	}
 
 	public ChokeValve getChokeValve(UUID id) {
-		return chokeValveRepository.find(id);
+		ChokeValve chokeValve = chokeValveRepository.find(id);
+		if (Objects.isNull(chokeValve)) {
+			throw new ChokeValveNotFoundException("Choke Valve with id " + id.toString() + " not found in the database.");
+		}
+		return chokeValve;
 	}
 
 	public ChokeValve saveChokeValve(ChokeValveRequest chokeValveRequest) {
@@ -46,9 +53,6 @@ public class ChokeValveService {
 
 	public ChokeValve updateChokeValve(UUID id, ChokeValveRequest chokeValveRequest) {
 		ChokeValve chokeValve = getChokeValve(id);
-		if (Objects.isNull(chokeValve)) {
-			//TODO throw exception
-		}
 		System.out.println("Updating choke valve with id " + id);
 		chokeValve.setName(chokeValveRequest.getName());
 		chokeValve.setValveInfo(chokeValveRequest.getValveInfo());
@@ -58,11 +62,11 @@ public class ChokeValveService {
 	public void deleteChokeValve(UUID id) {
 		System.out.println("Deleting choke valve with id " + id);
 		chokeValveRepository.delete(id);
-		//TODO remove topics
+		removeDefaultTopics(id);
 	}
 
 	private void addTopics(ChokeValve chokeValve) {
-		String baseTopicName = "choke." + chokeValve.getChokeValveId().toString();
+		String baseTopicName = CHOKE_TOPIC + chokeValve.getChokeValveId().toString();
 		String temperatureTopic = baseTopicName + "." + MeasurementType.temperature;
 		String pressureTopic = baseTopicName + "." + MeasurementType.pressure;
 
@@ -72,6 +76,13 @@ public class ChokeValveService {
 		System.out.println("Adding new topic: " + pressureTopic);
 		mqttConfig.adapter.addTopic(pressureTopic, 2);
 
+	}
+
+	private void removeDefaultTopics(UUID id) {
+		String baseTopicName = CHOKE_TOPIC + id.toString();
+		String temperatureTopic = baseTopicName + "." + MeasurementType.temperature;
+		String pressureTopic = baseTopicName + "." + MeasurementType.pressure;
+		mqttConfig.adapter.removeTopic(temperatureTopic, pressureTopic);
 	}
 
 }
