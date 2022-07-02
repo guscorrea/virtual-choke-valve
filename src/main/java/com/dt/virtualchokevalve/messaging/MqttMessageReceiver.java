@@ -8,9 +8,10 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 
 import com.dt.virtualchokevalve.model.MqttRequest;
-import com.dt.virtualchokevalve.model.enums.MeasurementType;
+import com.dt.virtualchokevalve.persistence.FlowRepository;
 import com.dt.virtualchokevalve.persistence.PressureRepository;
 import com.dt.virtualchokevalve.persistence.TemperatureRepository;
+import com.dt.virtualchokevalve.persistence.entity.Flow;
 import com.dt.virtualchokevalve.persistence.entity.Pressure;
 import com.dt.virtualchokevalve.persistence.entity.Temperature;
 import com.dt.virtualchokevalve.utils.TopicDataExtractor;
@@ -28,13 +29,16 @@ public class MqttMessageReceiver implements MessageHandler {
 
 	private final PressureRepository pressureRepository;
 
+	private final FlowRepository flowRepository;
+
 	@Autowired
 	public MqttMessageReceiver(ObjectMapper objectMapper, TopicDataExtractor topicDataExtractor, TemperatureRepository temperatureRepository,
-			PressureRepository pressureRepository) {
+			PressureRepository pressureRepository, FlowRepository flowRepository) {
 		this.objectMapper = objectMapper;
 		this.topicDataExtractor = topicDataExtractor;
 		this.temperatureRepository = temperatureRepository;
 		this.pressureRepository = pressureRepository;
+		this.flowRepository = flowRepository;
 	}
 
 	@Override
@@ -46,19 +50,39 @@ public class MqttMessageReceiver implements MessageHandler {
 			System.out.println("Message consumed from " + topic + " with LocalDateTime: " + mqttRequest.getTimeStamp() + " and value: "
 					+ mqttRequest.getValue());
 
-			if (MeasurementType.temperature.equals(mqttRequest.getMqttTopicData().getMeasurementType())) {
-				Temperature temperature = new Temperature(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getTimeStamp(),
-						mqttRequest.getValue());
-				temperatureRepository.save(temperature);
-			}
-			else {
-				Pressure pressure = new Pressure(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getTimeStamp(), mqttRequest.getValue());
-				pressureRepository.save(pressure);
+			switch (mqttRequest.getMqttTopicData().getMeasurementType()) {
+			case temperature:
+				saveTemperature(mqttRequest);
+				break;
+			case pressure:
+				savePressure(mqttRequest);
+				break;
+			case flow:
+				saveFlow(mqttRequest);
+				break;
+			default:
+				//code for default
 			}
 		}
 		catch (JsonProcessingException | IllegalArgumentException e) {
 			System.out.println("Error deserializing Mqtt Request " + message.getPayload());
 		}
+	}
+
+	private void savePressure(MqttRequest mqttRequest) {
+		Pressure pressure = new Pressure(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getTimeStamp(), mqttRequest.getValue());
+		pressureRepository.save(pressure);
+	}
+
+	private void saveTemperature(MqttRequest mqttRequest) {
+		Temperature temperature = new Temperature(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getTimeStamp(),
+				mqttRequest.getValue());
+		temperatureRepository.save(temperature);
+	}
+
+	private void saveFlow(MqttRequest mqttRequest) {
+		Flow flow = new Flow(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getTimeStamp(), mqttRequest.getValue());
+		flowRepository.save(flow);
 	}
 
 }

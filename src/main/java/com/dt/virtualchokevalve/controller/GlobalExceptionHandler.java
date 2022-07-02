@@ -18,6 +18,8 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(toListMessages(e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 
+	//TODO add one for DateTimeParseException
+
 	private List<String> toListMessages(String message) {
 		return Collections.singletonList(message);
 	}

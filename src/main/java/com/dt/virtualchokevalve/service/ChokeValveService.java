@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.dt.virtualchokevalve.config.MqttConfig;
 import com.dt.virtualchokevalve.exception.ChokeValveNotFoundException;
 import com.dt.virtualchokevalve.model.ChokeValveRequest;
-import com.dt.virtualchokevalve.model.enums.MeasurementType;
+import com.dt.virtualchokevalve.model.ComponentTopics;
 import com.dt.virtualchokevalve.persistence.ChokeValveRepository;
 import com.dt.virtualchokevalve.persistence.entity.ChokeValve;
 
@@ -23,9 +23,7 @@ public class ChokeValveService {
 	@Resource
 	private MqttConfig mqttConfig;
 
-	private static final String CHOKE_TOPIC = "choke.";
-
-	private ChokeValveRepository chokeValveRepository;
+	private final ChokeValveRepository chokeValveRepository;
 
 	@Autowired
 	public ChokeValveService(ChokeValveRepository chokeValveRepository) {
@@ -66,23 +64,27 @@ public class ChokeValveService {
 	}
 
 	private void addTopics(ChokeValve chokeValve) {
-		String baseTopicName = CHOKE_TOPIC + chokeValve.getChokeValveId().toString();
-		String temperatureTopic = baseTopicName + "." + MeasurementType.temperature;
-		String pressureTopic = baseTopicName + "." + MeasurementType.pressure;
+		ComponentTopics newComponentTopics = new ComponentTopics(chokeValve.getChokeValveId().toString());
 
+		String temperatureTopic = newComponentTopics.getTemperatureTopicName();
 		System.out.println("Adding new topic: " + temperatureTopic);
 		mqttConfig.adapter.addTopic(temperatureTopic, 2);
 
+		String pressureTopic = newComponentTopics.getPressureTopicName();
 		System.out.println("Adding new topic: " + pressureTopic);
 		mqttConfig.adapter.addTopic(pressureTopic, 2);
+
+		String flowTopic = newComponentTopics.getFlowTopicName();
+		System.out.println("Adding new topic: " + flowTopic);
+		mqttConfig.adapter.addTopic(flowTopic, 2);
 
 	}
 
 	private void removeDefaultTopics(UUID id) {
-		String baseTopicName = CHOKE_TOPIC + id.toString();
-		String temperatureTopic = baseTopicName + "." + MeasurementType.temperature;
-		String pressureTopic = baseTopicName + "." + MeasurementType.pressure;
-		mqttConfig.adapter.removeTopic(temperatureTopic, pressureTopic);
+		ComponentTopics componentTopics = new ComponentTopics(id.toString());
+		mqttConfig.adapter.removeTopic(componentTopics.getTemperatureTopicName(),
+				componentTopics.getPressureTopicName(),
+				componentTopics.getFlowTopicName());
 	}
 
 }
