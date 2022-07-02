@@ -8,9 +8,11 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 
 import com.dt.virtualchokevalve.model.MqttRequest;
+import com.dt.virtualchokevalve.persistence.CustomMeasureRepository;
 import com.dt.virtualchokevalve.persistence.FlowRepository;
 import com.dt.virtualchokevalve.persistence.PressureRepository;
 import com.dt.virtualchokevalve.persistence.TemperatureRepository;
+import com.dt.virtualchokevalve.persistence.entity.CustomMeasure;
 import com.dt.virtualchokevalve.persistence.entity.Flow;
 import com.dt.virtualchokevalve.persistence.entity.Pressure;
 import com.dt.virtualchokevalve.persistence.entity.Temperature;
@@ -31,14 +33,17 @@ public class MqttMessageReceiver implements MessageHandler {
 
 	private final FlowRepository flowRepository;
 
+	private final CustomMeasureRepository customMeasureRepository;
+
 	@Autowired
 	public MqttMessageReceiver(ObjectMapper objectMapper, TopicDataExtractor topicDataExtractor, TemperatureRepository temperatureRepository,
-			PressureRepository pressureRepository, FlowRepository flowRepository) {
+			PressureRepository pressureRepository, FlowRepository flowRepository, CustomMeasureRepository customMeasureRepository) {
 		this.objectMapper = objectMapper;
 		this.topicDataExtractor = topicDataExtractor;
 		this.temperatureRepository = temperatureRepository;
 		this.pressureRepository = pressureRepository;
 		this.flowRepository = flowRepository;
+		this.customMeasureRepository = customMeasureRepository;
 	}
 
 	@Override
@@ -60,8 +65,8 @@ public class MqttMessageReceiver implements MessageHandler {
 			case flow:
 				saveFlow(mqttRequest);
 				break;
-			default:
-				//code for default
+			case custom:
+				saveCustomMeasure(mqttRequest);
 			}
 		}
 		catch (JsonProcessingException | IllegalArgumentException e) {
@@ -83,6 +88,12 @@ public class MqttMessageReceiver implements MessageHandler {
 	private void saveFlow(MqttRequest mqttRequest) {
 		Flow flow = new Flow(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getTimeStamp(), mqttRequest.getValue());
 		flowRepository.save(flow);
+	}
+
+	private void saveCustomMeasure(MqttRequest mqttRequest) {
+		CustomMeasure customMeasure = new CustomMeasure(mqttRequest.getMqttTopicData().getComponentId(), mqttRequest.getPropertyType(),
+				mqttRequest.getTimeStamp(), mqttRequest.getValue());
+		customMeasureRepository.save(customMeasure);
 	}
 
 }

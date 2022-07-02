@@ -16,6 +16,8 @@ public class ComponentTopics {
 
 	private static final String FLOW = "." + MeasurementType.flow;
 
+	private static final String CUSTOM = "." + MeasurementType.custom;
+
 	private final String componentId;
 
 	private final String baseTopicName;
@@ -26,6 +28,8 @@ public class ComponentTopics {
 
 	private final String flowTopicName;
 
+	private final String customTopicName;
+
 	@Autowired
 	public ComponentTopics(String componentId) {
 		this.componentId = componentId;
@@ -33,6 +37,7 @@ public class ComponentTopics {
 		this.pressureTopicName = CHOKE_TOPIC + componentId + PRESSURE;
 		this.temperatureTopicName = CHOKE_TOPIC + componentId + TEMPERATURE;
 		this.flowTopicName = CHOKE_TOPIC + componentId + FLOW;
+		this.customTopicName = CHOKE_TOPIC + componentId + CUSTOM;
 	}
 
 }

@@ -13,4 +13,6 @@ public class MqttRequest {
 
 	private String value;
 
+	private String propertyType;
+
 }

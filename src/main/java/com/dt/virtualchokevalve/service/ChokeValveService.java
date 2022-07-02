@@ -78,6 +78,10 @@ public class ChokeValveService {
 		System.out.println("Adding new topic: " + flowTopic);
 		mqttConfig.adapter.addTopic(flowTopic, 2);
 
+		String customTopic = newComponentTopics.getCustomTopicName();
+		System.out.println("Adding new topic: " + customTopic);
+		mqttConfig.adapter.addTopic(customTopic, 2);
+
 	}
 
 	private void removeDefaultTopics(UUID id) {
