@@ -14,7 +14,7 @@ import com.dt.virtualchokevalve.exception.ChokeValveNotFoundException;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ChokeValveNotFoundException.class)
-	public ResponseEntity<List<String>> handleDocumentDuplicationException(ChokeValveNotFoundException e) {
+	public ResponseEntity<List<String>> handleNotFoundException(ChokeValveNotFoundException e) {
 		return new ResponseEntity<>(toListMessages(e.getMessage()), HttpStatus.NOT_FOUND);
 	}
 

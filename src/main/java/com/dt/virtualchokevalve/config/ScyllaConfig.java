@@ -37,7 +37,7 @@ public class ScyllaConfig {
 	}
 
 	@Bean
-	public Session session(Cluster cluster, @Value("${scylla.keyspace}") String keyspace) throws IOException {
+	public Session session(Cluster cluster, @Value("${scylla.keyspace}") String keyspace) {
 		final Session session = cluster.connect();
 		setupKeyspace(session, keyspace);
 		return session;
@@ -51,7 +51,7 @@ public class ScyllaConfig {
 		return new MappingManager(session, configuration);
 	}
 
-	private void setupKeyspace(Session session, String keyspace) throws IOException {
+	private void setupKeyspace(Session session, String keyspace) {
 		final Map<String, Object> replication = new HashMap<>();
 		replication.put("class", "NetworkTopologyStrategy");
 		replication.put("DC1", 3);
