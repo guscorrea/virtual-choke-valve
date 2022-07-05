@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class ChokeValveService {
 		ChokeValve chokeValve = getChokeValve(id);
 		System.out.println("Updating choke valve with id " + id);
 		chokeValve.setName(chokeValveRequest.getName());
-		chokeValve.setValveInfo(chokeValveRequest.getValveInfo());
+		chokeValve.setValveInfo(StringUtils.defaultIfEmpty(chokeValveRequest.getValveInfo(), chokeValve.getValveInfo()));
 		return chokeValveRepository.save(chokeValve);
 	}
 
@@ -88,7 +89,8 @@ public class ChokeValveService {
 		ComponentTopics componentTopics = new ComponentTopics(id.toString());
 		mqttConfig.adapter.removeTopic(componentTopics.getTemperatureTopicName(),
 				componentTopics.getPressureTopicName(),
-				componentTopics.getFlowTopicName());
+				componentTopics.getFlowTopicName(),
+				componentTopics.getCustomTopicName());
 	}
 
 }
