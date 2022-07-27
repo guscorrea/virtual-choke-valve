@@ -25,12 +25,12 @@ public class FlowController {
 		this.flowRepository = flowRepository;
 	}
 
-	@GetMapping("/flow")
+	@GetMapping("/v1/flow")
 	public ResponseEntity<List<Flow>> listFlow() {
 		return new ResponseEntity<>(flowRepository.findAll(), HttpStatus.OK);
 	}
 
-	@GetMapping("/flow/{id}")
+	@GetMapping("/v1/flow/{id}")
 	public ResponseEntity<List<Flow>> getFlow(@PathVariable("id") String id, @RequestParam(required = false) String startDateTime,
 			@RequestParam(required = false) String endDateTime) {
 		if (areDateFiltersInformed(startDateTime, endDateTime)) {

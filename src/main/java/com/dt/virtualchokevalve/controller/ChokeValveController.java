@@ -30,31 +30,31 @@ public class ChokeValveController {
 		this.chokeValveService = chokeValveService;
 	}
 
-	@GetMapping("/choke-valve")
+	@GetMapping("/v1/choke-valve")
 	public ResponseEntity<List<ChokeValve>> listChokeValve() {
 		List<ChokeValve> chokeValves = chokeValveService.getAllChokeValves();
 		return new ResponseEntity<>(chokeValves, HttpStatus.OK);
 	}
 
-	@GetMapping("/choke-valve/{id}")
+	@GetMapping("/v1/choke-valve/{id}")
 	public ResponseEntity<ChokeValve> getChokeValve(@PathVariable("id") UUID id) {
 		ChokeValve chokeValve = chokeValveService.getChokeValve(id);
 		return new ResponseEntity<>(chokeValve, HttpStatus.OK);
 	}
 
-	@PostMapping("/choke-valve")
+	@PostMapping("/v1/choke-valve")
 	public ResponseEntity<ChokeValve> createChokeValve(@RequestBody @Valid ChokeValveRequest chokeValveRequest) {
 		ChokeValve chokeValve = chokeValveService.saveChokeValve(chokeValveRequest);
 		return new ResponseEntity<>(chokeValve, HttpStatus.OK);
 	}
 
-	@PutMapping("/choke-valve/{id}")
+	@PutMapping("/v1/choke-valve/{id}")
 	public ResponseEntity<ChokeValve> updateChokeValve(@PathVariable("id") UUID id, @RequestBody @Valid ChokeValveRequest chokeValveRequest) {
 		ChokeValve updatedChokeValve = chokeValveService.updateChokeValve(id, chokeValveRequest);
 		return new ResponseEntity<>(updatedChokeValve, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/choke-valve/{id}")
+	@DeleteMapping("/v1/choke-valve/{id}")
 	public ResponseEntity<Void> createChokeValve(@PathVariable("id") UUID id) {
 		chokeValveService.deleteChokeValve(id);
 		return ResponseEntity.noContent().build();
