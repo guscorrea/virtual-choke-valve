@@ -55,7 +55,7 @@ public class ChokeValveController {
 	}
 
 	@DeleteMapping("/v1/choke-valve/{id}")
-	public ResponseEntity<Void> createChokeValve(@PathVariable("id") UUID id) {
+	public ResponseEntity<Void> deleteChokeValve(@PathVariable("id") UUID id) {
 		chokeValveService.deleteChokeValve(id);
 		return ResponseEntity.noContent().build();
 	}
