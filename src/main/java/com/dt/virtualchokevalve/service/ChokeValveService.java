@@ -17,8 +17,10 @@ import com.dt.virtualchokevalve.model.ChokeValveRequest;
 import com.dt.virtualchokevalve.model.ComponentTopics;
 import com.dt.virtualchokevalve.persistence.ChokeValveRepository;
 import com.dt.virtualchokevalve.persistence.entity.ChokeValve;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ChokeValveService {
 
 	@Resource
@@ -38,13 +40,14 @@ public class ChokeValveService {
 	public ChokeValve getChokeValve(UUID id) {
 		ChokeValve chokeValve = chokeValveRepository.find(id);
 		if (Objects.isNull(chokeValve)) {
+			log.error("Choke Valve with id {] not found in the DB.", id);
 			throw new ChokeValveNotFoundException("Choke Valve with id " + id.toString() + " not found in the database.");
 		}
 		return chokeValve;
 	}
 
 	public ChokeValve saveChokeValve(ChokeValveRequest chokeValveRequest) {
-		System.out.println("Creating a choke valve with name " + chokeValveRequest.getName());
+		log.info("Creating a choke valve with name {}", chokeValveRequest.getName());
 		ChokeValve chokeValve = new ChokeValve(UUID.randomUUID(), chokeValveRequest.getName(), chokeValveRequest.getValveInfo(), LocalDateTime.now());
 		addTopics(chokeValve);
 		return chokeValveRepository.save(chokeValve);
@@ -52,14 +55,14 @@ public class ChokeValveService {
 
 	public ChokeValve updateChokeValve(UUID id, ChokeValveRequest chokeValveRequest) {
 		ChokeValve chokeValve = getChokeValve(id);
-		System.out.println("Updating choke valve with id " + id);
+		log.info("Updating choke valve with id {}", id);
 		chokeValve.setName(chokeValveRequest.getName());
 		chokeValve.setValveInfo(StringUtils.defaultIfEmpty(chokeValveRequest.getValveInfo(), chokeValve.getValveInfo()));
 		return chokeValveRepository.save(chokeValve);
 	}
 
 	public void deleteChokeValve(UUID id) {
-		System.out.println("Deleting choke valve with id " + id);
+		log.info("Deleting choke valve with id {}", id);
 		chokeValveRepository.delete(id);
 		removeDefaultTopics(id);
 	}
@@ -68,25 +71,26 @@ public class ChokeValveService {
 		ComponentTopics newComponentTopics = new ComponentTopics(chokeValve.getChokeValveId().toString());
 
 		String temperatureTopic = newComponentTopics.getTemperatureTopicName();
-		System.out.println("Adding new topic: " + temperatureTopic);
+		log.info("Adding new topic: {}", temperatureTopic);
 		mqttConfig.adapter.addTopic(temperatureTopic, 2);
 
 		String pressureTopic = newComponentTopics.getPressureTopicName();
-		System.out.println("Adding new topic: " + pressureTopic);
+		log.info("Adding new topic: {}", pressureTopic);
 		mqttConfig.adapter.addTopic(pressureTopic, 2);
 
 		String flowTopic = newComponentTopics.getFlowTopicName();
-		System.out.println("Adding new topic: " + flowTopic);
+		log.info("Adding new topic: {}", flowTopic);
 		mqttConfig.adapter.addTopic(flowTopic, 2);
 
 		String customTopic = newComponentTopics.getCustomTopicName();
-		System.out.println("Adding new topic: " + customTopic);
+		log.info("Adding new topic: {}", customTopic);
 		mqttConfig.adapter.addTopic(customTopic, 2);
 
 	}
 
 	private void removeDefaultTopics(UUID id) {
 		ComponentTopics componentTopics = new ComponentTopics(id.toString());
+		log.info("Removing default topics for: {}", id);
 		mqttConfig.adapter.removeTopic(componentTopics.getTemperatureTopicName(),
 				componentTopics.getPressureTopicName(),
 				componentTopics.getFlowTopicName(),
