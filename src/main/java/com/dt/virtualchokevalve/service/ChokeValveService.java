@@ -40,7 +40,7 @@ public class ChokeValveService {
 	public ChokeValve getChokeValve(UUID id) {
 		ChokeValve chokeValve = chokeValveRepository.find(id);
 		if (Objects.isNull(chokeValve)) {
-			log.error("Choke Valve with id {] not found in the DB.", id);
+			log.warn("Choke Valve with id {} not found in the DB.", id);
 			throw new ChokeValveNotFoundException("Choke Valve with id " + id.toString() + " not found in the database.");
 		}
 		return chokeValve;
