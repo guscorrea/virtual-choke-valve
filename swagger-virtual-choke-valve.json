@@ -1,0 +1,778 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "Virtual Choke Valve",
+		"description": "The virtual-choke-valve microservice represents the digital version of a device known as Choke Valve, commonly used in oil and gas production facilities. This type of control valve controls the flow of fluids as they are being produced by the well and can act as pressure regulators in the reservoir and flowlines.",
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:8081",
+			"description": "Local Docker deployment URL"
+		}
+	],
+	"paths": {
+		"/v1/choke-valve/{id}": {
+			"get": {
+				"tags": [
+					"Choke Valve"
+				],
+				"summary": "Retrieves a choke valve.",
+				"description": "Retrieves a choke valve resource with a given UUID.",
+				"operationId": "getChokeValve",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The choke valve was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChokeValve"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Invalid UUID string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "The choke valve was not found in the DB.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Choke Valve with id c5f2f64c-b02d-4635-8a34-c3d4cc2d955b not found in the database."
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"Choke Valve"
+				],
+				"summary": "Updates a choke valve resource",
+				"description": "Sends a put request, validates input data, checks if the current resource exists, and saves the updated resource into the Scylla database.",
+				"operationId": "updateChokeValve",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ChokeValveRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Choke Valve resource was updated",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChokeValve"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Field name: must not be null"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "The choke valve was not found in the DB.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Choke Valve with id c5f2f64c-b02d-4635-8a34-c3d4cc2d955b not found in the database."
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Unexpected error occurred",
+						"content": {
+							"application/json": {}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"Choke Valve"
+				],
+				"summary": "Deletes a choke valve resource",
+				"description": "Deletes a choke valve resource with given UUID.",
+				"operationId": "deleteChokeValve",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "The choke valve was deleted."
+					}
+				}
+			}
+		},
+		"/v1/choke-valve": {
+			"get": {
+				"tags": [
+					"Choke Valve"
+				],
+				"summary": "Retrieves all choke valves.",
+				"description": "Retrieves all choke valve resources in a list.",
+				"operationId": "listChokeValve",
+				"responses": {
+					"200": {
+						"description": "The list of choke valves was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/ChokeValve"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"Choke Valve"
+				],
+				"summary": "Creates a choke valve resource",
+				"description": "Sends a post request, validates input data, and saves the generated resource into the Scylla database.",
+				"operationId": "createChokeValve",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ChokeValveRequest"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Choke Valve resource was created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ChokeValve"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Field name: must not be null"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Unexpected error occurred",
+						"content": {
+							"application/json": {}
+						}
+					}
+				}
+			}
+		},
+		"/v1/temperature": {
+			"get": {
+				"tags": [
+					"Temperature"
+				],
+				"summary": "Retrieves all temperature resources.",
+				"description": "Retrieves all temperature resources in a list.",
+				"operationId": "listTemperature",
+				"responses": {
+					"200": {
+						"description": "The list of temperature resources was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Temperature"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/temperature/{id}": {
+			"get": {
+				"tags": [
+					"Temperature"
+				],
+				"summary": "Retrieves all temperature resources by UUID.",
+				"description": "Retrieves all temperature resources in a list, filtered by UUID. Start date and time can also be used as optional filtering parameters.",
+				"operationId": "getTemperature",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "startDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "endDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The list of temperature resources was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Temperature"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Invalid UUID string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/pressure": {
+			"get": {
+				"tags": [
+					"Pressure"
+				],
+				"summary": "Retrieves all pressure resources.",
+				"description": "Retrieves all pressure resources in a list.",
+				"operationId": "listPressure",
+				"responses": {
+					"200": {
+						"description": "The list of pressure resources was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Pressure"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/pressure/{id}": {
+			"get": {
+				"tags": [
+					"Pressure"
+				],
+				"summary": "Retrieves all pressure resources by UUID.",
+				"description": "Retrieves all pressure resources in a list, filtered by UUID. Start date and time can also be used as optional filtering parameters.",
+				"operationId": "getPressure",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "startDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "endDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The list of pressure resources was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Pressure"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Invalid UUID string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/measure": {
+			"get": {
+				"tags": [
+					"Custom Measure"
+				],
+				"summary": "Retrieves all custom measures.",
+				"description": "Retrieves all custom measure resources in a list.",
+				"operationId": "listMeasures",
+				"responses": {
+					"200": {
+						"description": "The list of custom measures was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CustomMeasure"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/measure/{id}": {
+			"get": {
+				"tags": [
+					"Custom Measure"
+				],
+				"summary": "Retrieves a custom measure.",
+				"description": "Retrieves a custom measure resource with a given UUID.",
+				"operationId": "getMeasure",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The custom measure was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CustomMeasure"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Invalid UUID string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/measure/{id}/property/{propertyName}": {
+			"get": {
+				"tags": [
+					"Custom Measure"
+				],
+				"summary": "Retrieves all custom measures by property.",
+				"description": "Retrieves all custom measure resources in a list, filtered by UUID and a given property name. Start date and time can also be used as optional filtering parameters.",
+				"operationId": "getMeasureByProperty",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "propertyName",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "startDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "endDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The list of custom measures was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CustomMeasure"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Invalid UUID string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/flow": {
+			"get": {
+				"tags": [
+					"Flow"
+				],
+				"summary": "Retrieves all flow resources.",
+				"description": "Retrieves all flow resources in a list.",
+				"operationId": "listFlow",
+				"responses": {
+					"200": {
+						"description": "The list of flow resources was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Flow"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v1/flow/{id}": {
+			"get": {
+				"tags": [
+					"Flow"
+				],
+				"summary": "Retrieves all flow resources by UUID.",
+				"description": "Retrieves all flow resources in a list, filtered by UUID. Start date and time can also be used as optional filtering parameters.",
+				"operationId": "getFlow",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "startDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "endDateTime",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The list of flow resources was retrieved.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Flow"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "The request failed validation.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string",
+									"example": "Invalid UUID string"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"ChokeValve": {
+				"type": "object",
+				"properties": {
+					"chokeValveId": {
+						"type": "string",
+						"description": "The virtual choke valve unique identifier",
+						"format": "uuid",
+						"example": "ccf9e52b-e2e4-45d8-8884-0721d3246a53"
+					},
+					"name": {
+						"type": "string",
+						"description": "The name of the virtual choke valve resource",
+						"example": "Choke valve #1"
+					},
+					"valveInfo": {
+						"type": "string",
+						"description": "Additional information for choke valve resource",
+						"example": "Additional info"
+					},
+					"creationDateTime": {
+						"type": "string",
+						"description": "Resource creation date and time",
+						"format": "date-time"
+					}
+				},
+				"description": "Choke Valve resource"
+			},
+			"ChokeValveRequest": {
+				"required": [
+					"name"
+				],
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "The name of the virtual choke valve resource"
+					},
+					"valveInfo": {
+						"type": "string",
+						"description": "Additional information for choke valve resource"
+					}
+				}
+			},
+			"Temperature": {
+				"type": "object",
+				"properties": {
+					"chokeValveId": {
+						"type": "string",
+						"description": "The virtual choke valve unique identifier",
+						"format": "uuid",
+						"example": "ccf9e52b-e2e4-45d8-8884-0721d3246a53"
+					},
+					"timestamp": {
+						"type": "string",
+						"description": "Data generation timestamp",
+						"format": "date-time"
+					},
+					"value": {
+						"type": "string",
+						"description": "Measured value",
+						"example": "36.2421"
+					}
+				},
+				"description": "Pressure resource"
+			},
+			"Pressure": {
+				"type": "object",
+				"properties": {
+					"chokeValveId": {
+						"type": "string",
+						"description": "The virtual choke valve unique identifier",
+						"format": "uuid",
+						"example": "ccf9e52b-e2e4-45d8-8884-0721d3246a53"
+					},
+					"timestamp": {
+						"type": "string",
+						"description": "Data generation timestamp",
+						"format": "date-time"
+					},
+					"value": {
+						"type": "string",
+						"description": "Measured value",
+						"example": "36.2421"
+					}
+				},
+				"description": "Pressure resource"
+			},
+			"CustomMeasure": {
+				"type": "object",
+				"properties": {
+					"chokeValveId": {
+						"type": "string",
+						"description": "The virtual choke valve unique identifier",
+						"format": "uuid",
+						"example": "ccf9e52b-e2e4-45d8-8884-0721d3246a53"
+					},
+					"propertyType": {
+						"type": "string",
+						"description": "Name of the custom measure property",
+						"example": "Density"
+					},
+					"timestamp": {
+						"type": "string",
+						"description": "Data generation timestamp",
+						"format": "date-time"
+					},
+					"value": {
+						"type": "string",
+						"description": "Measured value",
+						"example": "36.2421"
+					}
+				},
+				"description": "Custom Measure resource"
+			},
+			"Flow": {
+				"type": "object",
+				"properties": {
+					"chokeValveId": {
+						"type": "string",
+						"description": "The virtual choke valve unique identifier",
+						"format": "uuid",
+						"example": "ccf9e52b-e2e4-45d8-8884-0721d3246a53"
+					},
+					"timestamp": {
+						"type": "string",
+						"description": "Data generation timestamp",
+						"format": "date-time"
+					},
+					"percentage": {
+						"type": "string",
+						"description": "Measured percentage value",
+						"example": "85"
+					}
+				},
+				"description": "Flow resource"
+			}
+		}
+	}
+}
